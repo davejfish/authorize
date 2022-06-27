@@ -4,42 +4,43 @@
 // import component creators
 import createAuthForm from './components/AuthForm.js';
 import createAuthError from './components/AuthError.js';
+import { getUser, signIn, signUp } from './services/members-service.js';
 
 let errorMessage = '';
 
 // write handler functions
 async function handlePageLoad() {
     // *** get the user
-
+    const user = await getUser();
     // *** if there is a user, redirect (use replace) to './members'
-
+    if (user) {
+        location.replace('./members');
+        return;
+    } 
     display();
 }
 
 async function handleSignIn(email, password) {
-    // *** remove next line after verifying credentials are working
-    console.log(email, password);
 
-    const response = null; // *** ? (don't forget call is asynchronous!)
+    const response = await signIn(email, password); // *** ? (don't forget call is asynchronous!)
     checkAuth(response);
 }
 
 async function handleSignUp(email, password) {
-    // *** remove next line after verifying credentials are working
-    console.log(email, password);
 
-    const response = null; // *** ? (don't forget call is asynchronous!)
+    const response = await signUp(email, password); // *** ? (don't forget call is asynchronous!)
     checkAuth(response);
 }
 
 function checkAuth(response) {
-    // *** remove next line after verifying user is being returned
-    console.log(response.user);
 
     if (response?.error) {
         // *** 
         // 1. console.log the response.error
+        // eslint-disable-next-line no-console
+        console.log(response.error);
         // 2. set the errorMessage state from response.error.message
+        errorMessage = response.error.message;
         // (keep this line👇 before console.log)
         // eslint-disable-next-line no-console
 
@@ -47,6 +48,7 @@ function checkAuth(response) {
     }
     else {
         // *** redirect (use replace) to './members'
+        window.location.replace('./members');
     }
 }
 
